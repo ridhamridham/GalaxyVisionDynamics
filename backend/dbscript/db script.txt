@@ -1,0 +1,131 @@
+use galaxyvisiondynamics;
+
+CREATE TABLE Users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('user', 'admin') NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Addresses (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    address_line1 VARCHAR(255) NOT NULL,
+    address_line2 VARCHAR(255),
+    city VARCHAR(255) NOT NULL,
+    state VARCHAR(255) NOT NULL,
+    zip_code VARCHAR(10) NOT NULL,
+    country VARCHAR(255) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Cards (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    card_number_hash VARCHAR(255) NOT NULL,
+    last_four_digits VARCHAR(4) NOT NULL,
+    expiry_date VARCHAR(10) NOT NULL,
+    payment_token VARCHAR(255),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Rooms (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    type VARCHAR(255) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    capacity INT NOT NULL,
+    description TEXT,
+    is_available BOOLEAN DEFAULT TRUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Bookings (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    room_id INT NOT NULL,
+    check_in_date DATE NOT NULL,
+    check_out_date DATE NOT NULL,
+    total_price DECIMAL(10,2) NOT NULL,
+    status ENUM('pending', 'confirmed', 'cancelled', 'completed') NOT NULL DEFAULT 'pending',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (room_id) REFERENCES Rooms(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Payments (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    booking_id INT NOT NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    payment_method VARCHAR(255) NOT NULL,
+    loyalty_points_used INT DEFAULT 0,
+    transaction_id VARCHAR(255),
+    status ENUM('success', 'failed', 'refunded', 'pending') NOT NULL DEFAULT 'pending',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES Bookings(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Activities (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(10,2) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE BookingActivities (
+    booking_id INT NOT NULL,
+    activity_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (booking_id, activity_id),
+    FOREIGN KEY (booking_id) REFERENCES Bookings(id) ON DELETE CASCADE,
+    FOREIGN KEY (activity_id) REFERENCES Activities(id) ON DELETE CASCADE
+);
+
+CREATE TABLE FoodMenu (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(10,2) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE FoodBooking (
+    booking_id INT NOT NULL,
+    food_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (booking_id, food_id),
+    FOREIGN KEY (booking_id) REFERENCES Bookings(id) ON DELETE CASCADE,
+    FOREIGN KEY (food_id) REFERENCES FoodMenu(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Notifications (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    type ENUM('booking', 'confirmation', 'reminder', 'promo') NOT NULL,
+    message TEXT NOT NULL,
+    status ENUM('pending', 'failed', 'read') NOT NULL DEFAULT 'pending',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE LoyaltyTransactions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    booking_id INT,
+    points_earned INT NOT NULL DEFAULT 0,
+    points_used INT NOT NULL DEFAULT 0,
+    balance_after_transaction INT NOT NULL,
+    reason ENUM('booking_reward', 'payment_discount', 'admin_adjustment') NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(id) ON DELETE CASCADE,
+    FOREIGN KEY (booking_id) REFERENCES Bookings(id) ON DELETE SET NULL
+);
