@@ -1,15 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom
+import { Link } from "react-router-dom";
 import { Carousel } from "react-responsive-carousel";
-import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
+import "bootstrap/dist/css/bootstrap.min.css";
 import diningImage from "./Images/Dinning_exp.jpg";
 import spaImage from "./Images/Spa.jpg";
 import infinityPoolImage from "./Images/pool.jpg";
 import luxurySuiteImage from "./Images/Luxary_suit.jpg";
-//import pool2 from "./Images/pool2.jpg";
+
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
-import "./Home.css"; // Import the CSS file for custom styling
+import "./Home.css";
 
 function Home() {
   return (
@@ -150,14 +150,14 @@ function Home() {
             </div>
             <div className="col-md-3">
               <img
-                src={spaImage} // Use the imported spa image
+                src={spaImage}
                 alt="Spa"
                 className="img-fluid rounded"
               />
             </div>
             <div className="col-md-3">
               <img
-                src={infinityPoolImage} // Use the imported infinity pool image
+                src={infinityPoolImage}
                 alt="Infinity Pool"
                 className="img-fluid rounded"
               />
