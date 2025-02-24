@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios"; // Import axios for making API requests
+import axios from "axios";
 import "./Registration.css";
 import saturnImage from "./Images/saturn.jpg";
 
@@ -10,11 +10,11 @@ function Registration() {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "USER", // Default role is USER
+    role: "user",
   });
   const [errors, setErrors] = useState({});
-  const [apiError, setApiError] = useState(""); // State to handle API errors
-  const navigate = useNavigate(); // For redirecting after successful registration
+  const [apiError, setApiError] = useState(""); 
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,14 +36,14 @@ function Registration() {
       newErrors.email = "Email must contain '@'";
     }
 
-    // Password validation
+    
     const passwordRegex = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
     if (!passwordRegex.test(formData.password)) {
       newErrors.password =
         "Password must be at least 6 characters long and contain at least one special character";
     }
 
-    // Confirm password validation
+    
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
@@ -65,19 +65,19 @@ function Registration() {
         };
 
         console.log("Sending request to backend:", userData);
-        // Make a POST request to the backend API
+        
         const response = await axios.post("http://localhost:8080/galaxyvision/users/register", userData);
   
-        // Handle successful registration
+        
         if (response.status === 201) {
           console.log("Registration successful:", response.data);
-          setApiError(""); // Clear any previous API errors
-          navigate("/login"); // Redirect to the login page
+          setApiError(""); 
+          navigate("/login"); 
         }
       } catch (error) {
-        // Handle API errors
+       
         if (error.response) {
-          setApiError(error.response.data); // Set the error message from the backend
+          setApiError(error.response.data); 
         } else {
           setApiError("An unexpected error occurred. Please try again.");
         }
@@ -92,7 +92,7 @@ function Registration() {
       </div>
       <div className="registration-form">
         <h2>Register at Galaxy Resort</h2>
-        {apiError && <p className="error">{apiError}</p>} {/* Display API errors */}
+        {apiError && <p className="error">{apiError}</p>} { }
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="name">Name:</label>

@@ -40,10 +40,10 @@ function Login() {
           password,
         });
 
-        const data = response.data; // Axios automatically parses JSON
+        const data = response.data; 
         console.log("Login successful:", data);
 
-        // Store token and redirect
+        
         localStorage.setItem("token", data.token);
         window.location.href = "/dashboard";
       } catch (error) {
