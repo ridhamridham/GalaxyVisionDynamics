@@ -1,30 +1,31 @@
 package com.galaxyvision.galaxyvisiondynamics.util;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@Component // Marks this class as a Spring component
+@Component
 public class PasswordUtil {
+
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     /**
-     * Hashes a password.
+     * Hashes a plain-text password using BCrypt.
      *
-     * @param password The password to hash.
+     * @param plainPassword The plain-text password to hash.
      * @return The hashed password.
      */
-    public String hashPassword(String password) {
-        return passwordEncoder.encode(password);
+    public String hashPassword(String plainPassword) {
+        return passwordEncoder.encode(plainPassword);
     }
 
     /**
-     * Verifies if a raw password matches a hashed password.
+     * Verifies if the plain-text password matches the hashed password.
      *
-     * @param rawPassword     The raw password.
-     * @param encodedPassword The hashed password.
-     * @return True if the passwords match, otherwise false.
+     * @param plainPassword The plain-text password provided by the user.
+     * @param hashedPassword The hashed password stored in the database.
+     * @return True if the passwords match, false otherwise.
      */
-    public boolean matches(String rawPassword, String encodedPassword) {
-        return passwordEncoder.matches(rawPassword, encodedPassword);
+    public boolean verifyPassword(String plainPassword, String hashedPassword) {
+        return passwordEncoder.matches(plainPassword, hashedPassword);
     }
 }
