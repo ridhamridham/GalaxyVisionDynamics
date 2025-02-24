@@ -10,10 +10,10 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/galaxyvision/**") // Allow CORS for all endpoints under /api
-                .allowedOrigins("http://localhost:3000") // Allow requests from your React app
-                .allowedMethods("GET", "POST", "PUT", "DELETE") // Allowed HTTP methods
-                .allowedHeaders("*") // Allowed headers
-                .allowCredentials(true); // Allow credentials (e.g., cookies)
+        registry.addMapping("/galaxyvision/**") 
+                .allowedOrigins("http://localhost:3000") 
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*") 
+                .allowCredentials(true); 
     }
 }
