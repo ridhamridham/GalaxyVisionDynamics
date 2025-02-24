@@ -9,4 +9,8 @@ public interface UserService {
 	User registerUser(User user);
 
 	LoginResponseVo loginUser(LoginRequestVo loginRequest);
+
+	void forgotPassword(String email);
+
+	void resetPassword(String token, String newPassword);
 }

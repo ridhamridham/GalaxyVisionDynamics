@@ -9,17 +9,20 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-	    http
-	        .cors(cors -> cors.disable())
-	        .csrf(csrf -> csrf.disable())
-	        .authorizeHttpRequests(auth -> auth
-	            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-	            .requestMatchers(HttpMethod.POST, "/galaxyvision/users/register").permitAll()
-	            .requestMatchers(HttpMethod.POST, "/galaxyvision/users/login").permitAll() // Allow login endpoint
-	            .anyRequest().authenticated()
-	        );
-	    return http.build();
-	}
+	@Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .cors(cors -> cors.disable())
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/galaxyvision/users/register").permitAll()
+                .requestMatchers(HttpMethod.POST, "/galaxyvision/users/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/galaxyvision/users/forgot-password").permitAll()
+                .requestMatchers(HttpMethod.POST, "/galaxyvision/users/reset-password").permitAll()
+                
+                .anyRequest().authenticated()
+            );
+        return http.build();
+    }
 }
