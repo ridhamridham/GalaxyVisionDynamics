@@ -44,12 +44,7 @@ public class UserServiceImplementation implements UserService {
 	@Override
     public LoginResponseVo loginUser(LoginRequestVo loginRequest) {
        
-		User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
-
-        if (!passwordUtil.verifyPassword(loginRequest.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid email or password");
-        }
+		User user = authenticate(loginRequest);
 
         String token = jwtUtil.generateToken(user.getEmail());
 
@@ -91,6 +86,22 @@ public class UserServiceImplementation implements UserService {
 
         // Delete the token after use
         passwordResetTokenRepository.delete(resetToken);
+    }
+    
+    private User authenticate(LoginRequestVo loginRequest) {
+    	
+    	User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid email or password"));
+    	
+    	System.out.println("Login Password : "+loginRequest.getPassword() );
+    	System.out.println("Db pwd : "+user.getPassword());
+    	
+
+        if (!passwordUtil.verifyPassword(loginRequest.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid email or password");
+        }
+    	
+        return user;
     }
 
 }
