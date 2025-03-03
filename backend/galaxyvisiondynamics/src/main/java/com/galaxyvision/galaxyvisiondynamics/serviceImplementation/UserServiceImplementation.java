@@ -93,11 +93,7 @@ public class UserServiceImplementation implements UserService {
     	User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid email or password"));
     	
-    	System.out.println("Login Password : "+loginRequest.getPassword() );
-    	System.out.println("Db pwd : "+user.getPassword());
-    	
-
-        if (!passwordUtil.verifyPassword(loginRequest.getPassword(), user.getPassword())) {
+    	if (!passwordUtil.verifyPassword(loginRequest.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid email or password");
         }
     	
