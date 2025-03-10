@@ -1,0 +1,22 @@
+/* Admin page container */
+.admin-container {
+    min-height: 80vh;
+    padding-bottom: 60px;
+  }
+  
+  /* Form styling */
+  .admin-form .form-control {
+    border-radius: 10px;
+  }
+  
+  /* Table styling */
+  .admin-table thead {
+    background-color: #f8f9fa;
+  }
+  
+  /* Card styling */
+  .admin-card {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
