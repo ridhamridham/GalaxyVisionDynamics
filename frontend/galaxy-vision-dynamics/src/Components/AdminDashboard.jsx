@@ -15,10 +15,9 @@ function AdminDashboard() {
 
   return (
     <>
-      {/* Navbar */}
-      <AdminNavbar /> {/* Include the actual navbar */}
+      <AdminNavbar />
 
-      {/* Main Content */}
+      
       <Container fluid className="mt-4">
         <h1 className="text-center mb-4">Admin Dashboard</h1>
 
@@ -136,7 +135,7 @@ function AdminDashboard() {
                 <Card.Text>Add, edit, or remove food menu items.</Card.Text>
                 <Button
                   variant="dark"
-                  onClick={() => navigate("/adminFoodMenuitems")}
+                  onClick={() => navigate("/AdminFoodMenu")}
                 >
                   Go to Food Menu
                 </Button>
