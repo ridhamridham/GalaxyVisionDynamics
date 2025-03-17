@@ -1,8 +1,11 @@
 package com.galaxyvision.galaxyvisiondynamics.service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.galaxyvision.galaxyvisiondynamics.entity.Activity;
@@ -28,5 +31,27 @@ public class ActivityService {
 
     public void deleteActivity(Long id) {
         repository.deleteById(id);
+    }
+    
+//    @Cacheable(value = "activities", key = "#sortBy")
+    public List<Activity> getActivities(String sortBy) {
+        List<Activity> activities = repository.findAll();
+
+        // Sort activities
+        if (sortBy != null) {
+            switch (sortBy) {
+                case "price_asc":
+                    activities.sort(Comparator.comparing(Activity::getPrice));
+                    break;
+                case "price_desc":
+                    activities.sort(Comparator.comparing(Activity::getPrice).reversed());
+                    break;
+            }
+        }
+
+        return activities;
+    }
+    public Optional<Activity> getActivityById(Long id) {
+        return repository.findById(id);
     }
 }
