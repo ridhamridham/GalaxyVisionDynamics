@@ -19,4 +19,5 @@ public class Activity {
     private String description;
     private Double price;
     private String availableTime;
+    private String imageUrl;
 }
