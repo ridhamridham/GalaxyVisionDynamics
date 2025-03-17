@@ -34,7 +34,10 @@ function AdminLogin() {
     }
 
     try {
-      const response = await axios.post("http://localhost:8080/galaxyvision/admin/login", { email, password });
+      const response = await axios.post(
+        "http://localhost:8080/galaxyvision/admin/login",
+        { email, password }
+      );
       const { token } = response.data;
 
       // Store token and admin details in localStorage

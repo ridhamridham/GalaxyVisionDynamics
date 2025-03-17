@@ -11,6 +11,7 @@ function AdminManageActivities() {
     description: "",
     price: "",
     availableTime: "",
+    imageUrl: "", // Add this field
   });
   const [error, setError] = useState("");
   const [editingId, setEditingId] = useState(null);
@@ -34,7 +35,7 @@ function AdminManageActivities() {
   const handleAddOrUpdate = async (e) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.description.trim() || 
-        formData.price <= 0 || !formData.availableTime.trim()) {
+        formData.price <= 0 || !formData.availableTime.trim() || !formData.imageUrl.trim()) {
       setError("Please fill all fields with valid information");
       return;
     }
@@ -65,7 +66,8 @@ function AdminManageActivities() {
           name: "", 
           description: "", 
           price: "", 
-          availableTime: "" 
+          availableTime: "",
+          imageUrl: "", // Reset this field
         });
         setEditingId(null);
         setError("");
@@ -82,7 +84,8 @@ function AdminManageActivities() {
       name: activity.name,
       description: activity.description,
       price: activity.price.toString(),
-      availableTime: activity.availableTime
+      availableTime: activity.availableTime,
+      imageUrl: activity.imageUrl, // Add this field
     });
     setEditingId(activity.id);
   };
@@ -173,6 +176,17 @@ function AdminManageActivities() {
                     </Col>
                   </Row>
 
+                  <FloatingLabel label="Image URL" className="mb-4">
+                    <Form.Control
+                      type="text"
+                      value={formData.imageUrl}
+                      onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                      placeholder="Enter image URL"
+                      size="lg"
+                      className="rounded-pill"
+                    />
+                  </FloatingLabel>
+
                   <div className="d-grid gap-2">
                     <Button 
                       variant="primary" 
@@ -189,7 +203,8 @@ function AdminManageActivities() {
                           name: "", 
                           description: "", 
                           price: "", 
-                          availableTime: "" 
+                          availableTime: "",
+                          imageUrl: "", // Reset this field
                         })}
                         size="lg"
                         className="rounded-pill"
@@ -220,6 +235,7 @@ function AdminManageActivities() {
                   <th className="fs-5">Description</th>
                   <th className="fs-5">Price</th>
                   <th className="fs-5">Timing</th>
+                  <th className="fs-5">Image URL</th> {/* Add this column */}
                   <th className="fs-5">Actions</th>
                 </tr>
               </thead>
@@ -231,6 +247,11 @@ function AdminManageActivities() {
                     <td>{activity.description}</td>
                     <td className="text-success fs-5">${activity.price}</td>
                     <td className="text-warning">{activity.availableTime}</td>
+                    <td>
+                      <a href={activity.imageUrl} target="_blank" rel="noopener noreferrer">
+                        View Image
+                      </a>
+                    </td>
                     <td>
                       <Button 
                         variant="warning" 

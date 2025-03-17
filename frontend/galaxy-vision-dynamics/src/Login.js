@@ -44,7 +44,8 @@ function Login() {
         console.log("Login successful:", data);
 
         
-        localStorage.setItem("token", data.token);
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("userDetails", JSON.stringify(response.data));
         window.location.href = "/dashboard";
       } catch (error) {
         // Handle errors

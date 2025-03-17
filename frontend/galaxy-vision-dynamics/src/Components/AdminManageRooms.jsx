@@ -20,8 +20,9 @@ function AdminManageRooms() {
   const [capacity, setCapacity] = useState("");
   const [description, setDescription] = useState("");
   const [isAvailable, setIsAvailable] = useState(true);
+  const [imageUrls, setImageUrls] = useState([]); // State for image URLs
   const [error, setError] = useState("");
-  const [editRoomId, setEditRoomId] = useState(null); // Track room being edited
+  const [editRoomId, setEditRoomId] = useState(null);
 
   // Fetch all rooms from the backend
   const fetchRooms = async () => {
@@ -49,8 +50,8 @@ function AdminManageRooms() {
   // Add or Update Room
   const handleAddOrUpdateRoom = async (e) => {
     e.preventDefault();
-    if (!type || !price || !capacity || !description) {
-      setError("Please fill out all fields");
+    if (!type || !price || !capacity || !description || imageUrls.length === 0) {
+      setError("Please fill out all fields and provide at least one image URL.");
       return;
     }
 
@@ -60,6 +61,7 @@ function AdminManageRooms() {
       capacity: parseInt(capacity),
       description,
       isAvailable,
+      imageUrls, // Include image URLs
     };
 
     try {
@@ -97,6 +99,7 @@ function AdminManageRooms() {
     setCapacity(room.capacity.toString());
     setDescription(room.description);
     setIsAvailable(room.isAvailable);
+    setImageUrls(room.imageUrls || []); // Set image URLs (default to empty array if null)
     setEditRoomId(room.id);
   };
 
@@ -127,8 +130,21 @@ function AdminManageRooms() {
     setCapacity("");
     setDescription("");
     setIsAvailable(true);
+    setImageUrls([]); // Reset image URLs
     setEditRoomId(null);
     setError("");
+  };
+
+  // Add Image URL
+  const addImageUrl = () => {
+    setImageUrls([...imageUrls, ""]); // Add an empty string for a new image URL
+  };
+
+  // Update Image URL
+  const updateImageUrl = (index, value) => {
+    const newImageUrls = [...imageUrls];
+    newImageUrls[index] = value;
+    setImageUrls(newImageUrls);
   };
 
   return (
@@ -137,7 +153,7 @@ function AdminManageRooms() {
       <AdminNavbar />
 
       {/* Main Content Wrapper with Fixed Margin */}
-      <div style={{ marginTop: "70px" }}> {/* Adjust this value based on navbar height */}
+      <div style={{ marginTop: "70px" }}>
         <Container>
           <h1 className="text-center mb-4">Manage Resort Rooms</h1>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -208,6 +224,26 @@ function AdminManageRooms() {
                     <option value="false">Not Available</option>
                   </Form.Select>
                 </FloatingLabel>
+
+                {/* Image URLs */}
+                <div className="mb-3">
+                  <label>Image URLs (At least 3)</label>
+                  {imageUrls.map((url, index) => (
+                    <Form.Control
+                      key={index}
+                      type="text"
+                      placeholder="Image URL"
+                      value={url}
+                      onChange={(e) => updateImageUrl(index, e.target.value)}
+                      className="mb-2"
+                      required
+                    />
+                  ))}
+                  <Button variant="secondary" onClick={addImageUrl}>
+                    Add Image URL
+                  </Button>
+                </div>
+
                 <div className="d-grid gap-2">
                   <Button variant="primary" type="submit" size="lg">
                     {editRoomId ? "Update Room" : "Add Room"}
@@ -239,6 +275,7 @@ function AdminManageRooms() {
                     <th>Capacity</th>
                     <th>Description</th>
                     <th>Availability</th>
+                    <th>Image URLs</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -251,6 +288,17 @@ function AdminManageRooms() {
                       <td>{room.capacity}</td>
                       <td>{room.description}</td>
                       <td>{room.isAvailable ? "Available" : "Not Available"}</td>
+                      <td>
+                        <ul>
+                          {room.imageUrls && room.imageUrls.map((url, idx) => (
+                            <li key={idx}>
+                              <a href={url} target="_blank" rel="noopener noreferrer">
+                                Image {idx + 1}
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </td>
                       <td>
                         <Button
                           variant="warning"
