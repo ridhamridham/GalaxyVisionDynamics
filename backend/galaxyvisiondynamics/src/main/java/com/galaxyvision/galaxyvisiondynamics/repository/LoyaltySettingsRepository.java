@@ -6,4 +6,6 @@ import com.galaxyvision.galaxyvisiondynamics.entity.LoyaltySettings;
 
 public interface LoyaltySettingsRepository extends JpaRepository<LoyaltySettings, Long> {
 
+	LoyaltySettings findFirstByOrderByIdAsc();
+
 }
