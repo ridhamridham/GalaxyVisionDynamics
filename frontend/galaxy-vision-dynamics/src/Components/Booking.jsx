@@ -11,15 +11,22 @@ import {
   MenuItem,
   Card,
   CardContent,
+  Box,
 } from "@mui/material";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Layout from "./Layout"; // Assuming Layout includes the sidebar
 
 function Booking() {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const type = queryParams.get("type"); // room, food, or activity
+  var type = queryParams.get("type"); // room, food, or activity
+  if (type === "activity") {
+    type = "activities";
+  }
   const id = queryParams.get("id"); // ID of the item
+  const checkInDate = queryParams.get("checkInDate"); // Check-in date (for rooms)
+  const checkOutDate = queryParams.get("checkOutDate"); // Check-out date (for rooms)
+  const navigate = useNavigate();
 
   const [item, setItem] = useState(null); // Room, food, or activity details
   const [addresses, setAddresses] = useState([]); // User's saved addresses
@@ -58,7 +65,7 @@ function Booking() {
         const userDetails = JSON.parse(localStorage.getItem("userDetails"));
         const userId = userDetails?.id;
         const response = await axios.get("http://localhost:8080/galaxyvision/users/addresses/get", {
-            params: { userId },
+          params: { userId },
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -120,6 +127,42 @@ function Booking() {
     return (price * 1.13).toFixed(2); // Add 13% tax
   };
 
+  // Handle confirm booking
+  const handleConfirmBooking = async () => {
+    try {
+      const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+      const userId = userDetails?.id;
+
+      // Prepare the booking payload
+      const bookingPayload = {
+        userId: userId,
+        roomId: type === "rooms" ? id : null,
+        foodItemId: type === "food" ? id : null,
+        activityId: type === "activities" ? id : null,
+        checkInDate: type === "rooms" ? checkInDate : null, // Use check-in date for rooms
+        checkOutDate: type === "rooms" ? checkOutDate : null, // Use check-out date for rooms
+        totalPrice: parseFloat(calculateTotalPrice()), // Ensure it's a number
+      };
+
+      // Call the createBooking API
+      const response = await axios.post(
+        "http://localhost:8080/galaxyvision/users/bookings",
+        bookingPayload,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      // Navigate to the Payment Page with the booking ID
+      navigate(`/payment?type=${type}&id=${id}&bookingId=${response.data.id}`);
+    } catch (error) {
+      console.error("Error creating booking:", error);
+      alert("Failed to create booking. Please try again.");
+    }
+  };
+
   return (
     <Layout>
       <Container sx={{ mt: 5 }}>
@@ -137,6 +180,18 @@ function Booking() {
               </Typography>
             </CardContent>
           </Card>
+        )}
+
+        {/* Check-in and Check-out Dates (for rooms only) */}
+        {type === "room" && (
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h6" gutterBottom>
+              Check-in Date: {checkInDate}
+            </Typography>
+            <Typography variant="h6" gutterBottom>
+              Check-out Date: {checkOutDate}
+            </Typography>
+          </Box>
         )}
 
         {/* Saved Addresses */}
@@ -216,7 +271,12 @@ function Booking() {
         </Typography>
 
         {/* Confirm Booking Button */}
-        <Button variant="contained" color="primary" sx={{ mt: 3 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ mt: 3 }}
+          onClick={handleConfirmBooking}
+        >
           Confirm Booking
         </Button>
       </Container>
